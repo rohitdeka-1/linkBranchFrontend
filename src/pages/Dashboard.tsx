@@ -48,11 +48,11 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="bg-black min-h-screen text-white p-5">
-      <h1 className="text-3xl mb-4">Dashboard</h1>
+    <div className="bg-gradient-to-b from-[#2b2a2a] to-black min-h-screen text-white p-5">
+      <h1 className="text-3xl text-center mb-4 font-bold">Dashboard</h1>
 
       {error ? (
-        <p className="text-red-400">{error}</p>
+        <p className="text-red-400 slide-in">{error}</p>
       ) : user ? (
         <div className="space-y-2">
           <p><strong>Welcome,</strong> {user.fullname}!</p>
