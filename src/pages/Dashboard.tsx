@@ -23,7 +23,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchMe = async () => {
       try {
-        const res = await axios.get("/api/v1/user/me", {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/user/me`, {
           withCredentials: true, 
         });
 
