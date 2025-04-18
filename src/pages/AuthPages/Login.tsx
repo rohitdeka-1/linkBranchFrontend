@@ -1,12 +1,13 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
 import Logo from "../components/Logo";
+import axios from "../../utils/axios";
+import { isAxiosError } from "axios";
 
 const Login = () => {
-  const backendURI = "/api/v1/auth/login";
+  const backendURI = `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/login`;
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -51,7 +52,7 @@ const Login = () => {
         setTimeout(() => navigate("/dashboard"), 400); // Wait for slide-out animation to finish
       }, 1500);
     } catch (err: unknown) {
-      if (axios.isAxiosError(err) && err.response) {
+      if (isAxiosError(err) && err.response) {
         if (err.response.status === 401) {
           setNotification({
             message: "Invalid credentials. Please try again.",
