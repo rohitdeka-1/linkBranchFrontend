@@ -29,7 +29,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(backendURI, formData, {
-        withCredentials: true,
+        withCredentials: true, 
       });
 
       console.log("Logged in successfully:", res.data);
@@ -64,7 +64,14 @@ const Login = () => {
             type: "error",
             animation: "animate-slide-in",
           });
-        } else {
+        }else if(err.response.status === 422){
+          setNotification({
+            message: "Password should be greater than 3 characters",
+            type: "error",
+            animation: "animate-slide-in",
+          });
+        }
+         else {
           setNotification({
             message: "An error occurred during login. Please try again.",
             type: "error",
@@ -88,7 +95,7 @@ const Login = () => {
             ? { ...prev, animation: "animate-slide-out" }
             : null
         );
-      }, 1500);
+      }, 2500);
     }
   };
 

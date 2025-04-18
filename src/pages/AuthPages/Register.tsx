@@ -105,7 +105,7 @@ const Register = () => {
   return (
     <motion.div
       style={{
-        backgroundImage: "linear-gradient(90deg, #000000, #1e293b)", // dark to bright (left to right)
+        backgroundImage: "linear-gradient(90deg, #000000, #1B263B)", // dark to bright (left to right)
         backgroundSize: "200% 100%",
         backgroundPosition: "left center",
       }}
