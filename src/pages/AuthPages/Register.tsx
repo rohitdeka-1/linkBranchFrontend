@@ -9,7 +9,8 @@ import { isAxiosError } from "axios";
 
 
 const Register = () => {
-  const backendURI = "/api/v1/auth/register";
+  const backendURI = `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/register`;
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
