@@ -1,9 +1,12 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import { motion } from "framer-motion";
 import Logo from "../components/Logo";
+import axios from "../../utils/axios";
+import { isAxiosError } from "axios";
+
+
 
 const Register = () => {
   const backendURI = "/api/v1/auth/register";
@@ -52,8 +55,8 @@ const Register = () => {
         });
         setTimeout(() => navigate("/dashboard"), 400); // Wait for slide-out animation to finish
       }, 1500);
-    } catch (err: unknown) {
-      if (axios.isAxiosError(err) && err.response) {
+    } catch (err: any ) {
+      if (isAxiosError(err) && err.response) {
         if (err.response.status === 409) {
           setNotification({
             message:

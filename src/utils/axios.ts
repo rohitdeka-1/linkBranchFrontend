@@ -1,9 +1,9 @@
 
-import axios from "axios";
+import Axios from "axios";
 
-const api = axios.create({
-  baseURL: "/api/v1",
+const axios = Axios.create({
+  baseURL: import.meta.env.VITE_BACKEND_URI,
   withCredentials: true, 
 });
 
-export default api;
+export default axios;
