@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../utils/axios";
+import { isAxiosError } from "axios";
 
 type User = {
   fullname: string;
@@ -29,7 +30,7 @@ const Dashboard = () => {
 
         setUser(res.data.user);
       } catch (err: unknown) {
-        if (axios.isAxiosError(err) && err.response) {
+        if (isAxiosError(err) && err.response) {
           if (err.response.status === 401) {
             setError("You are not logged in or your session expired.");
           } else if (err.response.status === 500) {
