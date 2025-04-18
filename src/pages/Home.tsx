@@ -19,7 +19,7 @@ const Home = () => {
       }}
     >
       <Logo />
-      <div className="min-h-screen flex flex-col justify-start items-start relative pb-40 text-white p-4 space-y-6">
+      <div className="min-h-screen flex flex-col justify-start items-start relative pb-40 text-white p-4 space-y-8 ">
         <div className="flex flex-col space-y-4 mt-20">
           <h2 className="font-extralight p-4 text-3xl w-9/12 leading-relaxed">
             Multiple Links for Your Link in Bio
@@ -31,16 +31,37 @@ const Home = () => {
         </div>
 
         <div className="flex flex-row px-4 space-x-7  w-full mt-10">
-          <button className="bg-slate-200 text-black px-4 py-2 w-1/2 h-14 rounded-2xl font-bold">
-            <Link to="/login">Login</Link>
-          </button>
-          <button className="bg-slate-200 text-black px-4 py-2 w-1/2 rounded-2xl font-bold ">
-          <Link to="/register">Register</Link>
-          </button>
+          <Link
+            to="/login"
+            className="bg-slate-200 h-14 text-black text-center flex justify-center px-4 py-2 w-1/2 rounded-2xl font-bold "
+          >
+            <button>Login</button>
+          </Link>
+
+          <Link
+            to="/register"
+            className="bg-slate-200 text-black text-center flex justify-center px-4 py-2 w-1/2 rounded-2xl font-bold "
+          >
+            <button>Register</button>
+          </Link>
         </div>
 
         <div className="flex flex-row px-4 space-x-7 w-full mt-10">
           <img src="./coverPhoto.png"></img>
+        </div>
+
+        <div className="flex  justify-center items-center flex-col px-4 w-full ">
+          <h1 className="text-3xl font-bold">Features</h1>
+          <p className="text-slate-300 py-6 text-justify">
+            LinkBranch is a powerful tool that allows you to create a
+            personalized and customizable page that houses all your important links.
+            Whether you're a content creator, business owner, or just someone who
+            wants to share their favorite links, LinkBranch has got you covered.
+          </p>
+          </div>
+
+        <div className="flex flex-row px-4 space-x-7 w-full mt-10">
+          <img src="./cover2.png"></img>
         </div>
       </div>
     </motion.div>
