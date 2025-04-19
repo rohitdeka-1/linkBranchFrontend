@@ -25,6 +25,9 @@ const Dashboard = () => {
     const fetchMe = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/user/me`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken") || ""}`
+          },
           withCredentials: true, 
         });
 

@@ -33,6 +33,8 @@ const Login = () => {
         withCredentials: true, 
       });
 
+      localStorage.setItem("accessToken", res.data.accessToken);
+
       console.log("Logged in successfully:", res.data);
 
       // Show success notification
