@@ -104,6 +104,7 @@ export const Dashboard = () => {
                   alt="Profile"
                   className="rounded-full w-24 h-24 border-2 border-white"
                 />
+                
               </button>
             ) : (
               <button
@@ -111,8 +112,11 @@ export const Dashboard = () => {
                 className="rounded-full hover:bg-red-300 w-24 h-24 bg-gray-700 flex items-center justify-center text-xl"
               >
                 {user.fullname?.charAt(0)}
+                
               </button>
             )}
+            
+            
           </div>
 
           <input
