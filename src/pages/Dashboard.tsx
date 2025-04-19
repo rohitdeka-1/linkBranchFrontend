@@ -30,7 +30,6 @@ export const Dashboard = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-
   const [newLink, setNewLink] = useState({
     title: "",
     platform: "",
@@ -62,9 +61,7 @@ export const Dashboard = () => {
     fetchMe();
   }, []);
 
-  const image_URI = `${
-    import.meta.env.VITE_BACKEND_URI
-  }/api/v1/user/upload-image`;
+  const image_URI = `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/user-up`;
 
   const handleUploadImage = () => {
     fileInputRef.current?.click();
@@ -77,16 +74,19 @@ export const Dashboard = () => {
     const formData = new FormData();
     formData.append("profilePic", file);
 
-    setUploading(true); 
+    setUploading(true);
 
     try {
-      const res = await axios.post(image_URI, formData, {
+      const res = await axios.put(image_URI, formData, {
         withCredentials: true,
       });
 
       setUser((prevUser) => {
         if (!prevUser) return null;
-        return { ...prevUser, profilePic: res.data.image };
+        return {
+          ...prevUser,
+          profilePic: `${res.data.user.profilePic}?t=${new Date().getTime()}`,
+        };
       });
     } catch (err) {
       console.error("Error uploading image:", err);
@@ -104,30 +104,33 @@ export const Dashboard = () => {
     console.log("Link submitted:", newLink);
 
     try {
-      await axios.put(
-        `${import.meta.env.VITE_BACKEND_URI}/api/v1/user`,
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/links`,
         {
           platform: newLink.title,
           url: newLink.platform,
         },
         { withCredentials: true }
       );
+      const updatedUser = res.data.user;
+
+      setUser(updatedUser);
 
       setNewLink({ title: "", platform: "" });
       setIsFormOpen(false);
     } catch (err) {
       console.error("Error adding link:", err);
-}
+    }
   };
-  const handleLogout = async () => { 
+  const handleLogout = async () => {
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/logout`,
         { withCredentials: true }
       );
-      setUser(null);  
-      setError(null);  
-      window.location.href = "/login";  
+      setUser(null);
+      setError(null);
+      window.location.href = "/login";
     } catch (err) {
       console.error("Error logging out:", err);
       setError("Error logging out. Please try again.");
@@ -171,7 +174,7 @@ export const Dashboard = () => {
                     </>
                   ) : (
                     <div
-                      className={`rounded-full hover:bg-red-300 w-full h-full bg-gray-700 flex items-center justify-center text-xl ${
+                      className={`rounded-ful hover:bg-slate-600 w-full h-full bg-gray-700 flex items-center justify-center text-xl ${
                         uploading ? "blur-sm" : ""
                       }`}
                     >
@@ -201,21 +204,41 @@ export const Dashboard = () => {
             </p>
             <div className="mt-6">
               <h2 className="text-2xl font-semibold mb-4">Links</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2  sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
                 {user.links.map((link) => (
                   <motion.a
                     key={link._id}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{
+                      scale: 0.98,
+                      rotate: -1,
+                      x: -2,
+                      y: -2,
+                      transition: {
+                        type: "tween",
+                        stiffness: 200,
+                        duration:0.15,
+                        damping: 2,
+                      },
+                    }}
+                    whileTap={{
+                      scale: 0.98,
+                      rotate: -1,
+                      x: -2,
+                      y: -2,
+                      transition: {
+                        type: "tween",
+                        stiffness: 200,
+                        duration:0.13,
+                        damping: 15,
+                      },
+                    }}
                     className="block bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30"
+                    style={{ transformOrigin: "left bottom" }}
                   >
-                    <div className="flex items-center space-x-4">
-                      <div className="bg-cyan-600 w-10 h-10 flex items-center justify-center rounded-full text-white font-bold text-xl">
-                        {link.title.charAt(0).toUpperCase()}
-                      </div>
+                    <div className="flex items-center">
                       <div>
                         <h3 className="text-lg font-semibold">{link.title}</h3>
                         <p className="text-sm text-gray-400">{link.url}</p>
