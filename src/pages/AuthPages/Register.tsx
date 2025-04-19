@@ -37,7 +37,7 @@ const Register = () => {
       const res = await axios.post(backendURI, formData, {
         withCredentials: true,
       });
-      localStorage.setItem("accessToken", res.data.accessToken);
+
       console.log("Registered successfully:", res.data);
 
       // Show success notification
