@@ -24,7 +24,7 @@ const SkeletonBox = ({ className }: { className: string }) => (
 const SkeletonLoader = () => {
   return (
     <div className="p-6 space-y-4 max-w-xl mx-auto">
-        <SkeletonBox className="h-6 w-3/4 rounded" />
+      <SkeletonBox className="h-6 w-3/4 rounded" />
       <SkeletonBox className="h-6 w-3/4 rounded" />
       <SkeletonBox className="h-6 w-3/4 rounded" />
       <SkeletonBox className="h-48 w-full rounded-lg" />

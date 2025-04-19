@@ -6,4 +6,22 @@ const axios = Axios.create({
   withCredentials: true, 
 });
 
+axios.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      console.error("Unauthorized access - redirecting to login");
+      window.location.href = "/login"; 
+    }
+    return Promise.reject(error);
+  }
+)
+
 export default axios;
+
+
+
+
+

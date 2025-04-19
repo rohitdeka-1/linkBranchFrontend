@@ -1,32 +1,29 @@
-import { useEffect, useRef, useState } from "react";
-import axios from "../utils/axios";
-import { isAxiosError } from "axios";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router-dom";
 
-import {
-  faSquarePlus,
-  faRightFromBracket,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
-import { motion, AnimatePresence } from "framer-motion";
-import SkeletonLoader from "./components/Dashboard/Loader";
+import { useEffect, useRef, useState } from "react"
+import axios from "../utils/axios"
+import { isAxiosError } from "axios"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useNavigate } from "react-router-dom"
 
+import { faSquarePlus, faRightFromBracket, faBars } from "@fortawesome/free-solid-svg-icons"
+import { motion, AnimatePresence } from "framer-motion"
+import SkeletonLoader from "./components/Dashboard/Loader"
 
 type User = {
-  fullname: string;
-  username: string;
-  email: string;
-  bio: string | null;
-  profilePic: string | null;
+  fullname: string
+  username: string
+  email: string
+  bio: string | null
+  profilePic: string | null
   links: Array<{
-    _id: string;
-    title: string;
-    url: string;
-    icon: string;
-    order: number;
-  }>;
-};
+    _id: string
+    title: string
+    url: string
+    icon: string
+    order: number
+    backgroundImage: string
+  }>
+}
 
 const randomImage = [
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745083949/ran3_atzbov.gif",
@@ -34,93 +31,104 @@ const randomImage = [
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745086042/astra_tsa2ff.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745086883/neon_a7ok58.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745085092/1203d8dbd23787123dc714de1c07df09_j9ivav.gif",
+]
 
-];
-
-
-
-const randomIndex = Math.floor(Math.random() * randomImage.length);
+const randomIndex = Math.floor(Math.random() * randomImage.length)
 console.log(randomIndex);
 
 export const Dashboard = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const navigate = useNavigate();
+  const [user, setUser] = useState<User | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const navigate = useNavigate()
   const [newLink, setNewLink] = useState({
     title: "",
     platform: "",
-  });
+  })
+
+  const [selectedLink, setSelectedLink] = useState<{
+    _id: string
+    title: string
+    url: string
+    icon: string
+    order: number
+  } | null>(null)
+  const [title, setTitle] = useState("")
+  const [url, setUrl] = useState("")
+  const [bgIndex, setBgIndex] = useState(0)
+  const [updatingLinkId, setUpdatingLinkId] = useState<string | null>(null)
+
+  const fetchMe = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_BACKEND_URI}/api/v1/user/me`, { withCredentials: true })
+      setUser(res.data.user)
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response) {
+        if (err.response.status === 401) {
+          setError("You are not logged in or your session expired.")
+        } else if (err.response.status === 500) {
+          setError("Internal server error. Please try again later.")
+        } else {
+          setError("An error occurred. Please try again.")
+        }
+      } else {
+        console.error("Not authenticated", err)
+        setError("You are not logged in or your session expired.")
+      }
+    }
+  }
+  useEffect(() => {
+    console.log("BGINDEX",bgIndex)
+  },[bgIndex])
 
   useEffect(() => {
-    const fetchMe = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/me`,
-          { withCredentials: true }
-        );
-        setUser(res.data.user);
-      } catch (err: unknown) {
-        if (isAxiosError(err) && err.response) {
-          if (err.response.status === 401) {
-            setError("You are not logged in or your session expired.");
-          } else if (err.response.status === 500) {
-            setError("Internal server error. Please try again later.");
-          } else {
-            setError("An error occurred. Please try again.");
-          }
-        } else {
-          console.error("Not authenticated", err);
-          setError("You are not logged in or your session expired.");
-        }
-      }
-    };
-    fetchMe();
-  }, []);
+    
+    fetchMe()
+  }, [])
 
-  const image_URI = `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/user-up`;
+  const image_URI = `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/user-up`
 
   const handleUploadImage = () => {
-    fileInputRef.current?.click();
-  };
+    fileInputRef.current?.click()
+  }
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    const formData = new FormData();
-    formData.append("profilePic", file);
+    const formData = new FormData()
+    formData.append("profilePic", file)
 
-    setUploading(true);
+    setUploading(true)
 
     try {
       const res = await axios.put(image_URI, formData, {
         withCredentials: true,
-      });
+      })
 
       setUser((prevUser) => {
-        if (!prevUser) return null;
+        if (!prevUser) return null
         return {
           ...prevUser,
           profilePic: `${res.data.user.profilePic}?t=${new Date().getTime()}`,
-        };
-      });
+        }
+      })
     } catch (err) {
-      console.error("Error uploading image:", err);
+      console.error("Error uploading image:", err)
     } finally {
-      setUploading(false);
+      setUploading(false)
     }
-  };
+  }
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewLink({ ...newLink, [e.target.id]: e.target.value });
-  };
+    setNewLink({ ...newLink, [e.target.id]: e.target.value })
+  }
 
   const handleAddLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Link submitted:", newLink);
+    e.preventDefault()
+    console.log("Link submitted:", newLink)
 
     try {
       const res = await axios.post(
@@ -129,36 +137,75 @@ export const Dashboard = () => {
           platform: newLink.title,
           url: newLink.platform,
         },
-        { withCredentials: true }
-      );
-      const updatedUser = res.data.user;
+        { withCredentials: true },
+      )
+      const updatedUser = res.data.user
 
-      setUser(updatedUser);
+      setUser(updatedUser)
 
-      setNewLink({ title: "", platform: "" });
-      setIsFormOpen(false);
+      setNewLink({ title: "", platform: "" })
+      setIsFormOpen(false)
     } catch (err) {
-      console.error("Error adding link:", err);
+      console.error("Error adding link:", err)
     }
-  };
+  }
+
   const handleLogout = async () => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/logout`,
-        { withCredentials: true }
-      );
-      setUser(null);
-      setError(null);
-      navigate("/login");
+      await axios.post(`${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/logout`, { withCredentials: true })
+      setUser(null)
+      setError(null)
+      navigate("/login", { replace: true })
     } catch (err) {
-      console.error("Error logging out:", err);
-      setError("Error logging out. Please try again.");
+      console.error("Error logging out:", err)
+      setError("Error logging out. Please try again.")
     }
-  };
+  }
+
+  const handleSave = async () => {
+    if (!selectedLink) return
+
+    // Set the updating state for this specific link
+    setUpdatingLinkId(selectedLink._id)
+
+    try {
+     await axios.put(
+        `${import.meta.env.VITE_BACKEND_URI}/api/v1/links/${selectedLink._id}`,
+        {
+          title,
+          url,
+          backgroundImage: randomImage[bgIndex],
+        },
+        { withCredentials: true },
+      )
+
+      // Instead of directly setting the user state, update it while preserving the existing state
+      // setUser((prevUser) => {
+      //   if (!prevUser) return prevUser
+
+      //   // Create a new user object with updated links
+      //   console.log("Updated user data:", res.data.user)
+      //   return {
+      //     ...prevUser,
+      //     links: res.data.user.links || prevUser.links,
+      //   }
+      // })
+
+
+    fetchMe()
+
+      setSelectedLink(null)
+    } catch (err) {
+      console.error("Error updating link:", err)
+    } finally {
+      // Clear the updating state
+      setUpdatingLinkId(null)
+    }
+  }
 
   return (
     <div className="relative">
-      <div className="bg-gradient-to-b from-[#2b2a2a] to-black min-h-screen text-white p-5">
+      <div className="bg-gradient-to-b from-[#1c1c2b] via-[#0d0d1f] to-[#000000] min-h-screen text-white p-5">
         <h1 className="text-3xl text-center mb-4 font-bold">Dashboard</h1>
 
         {error ? (
@@ -167,20 +214,15 @@ export const Dashboard = () => {
           <div className="space-y-2">
             <div className="relative flex flex-col items-center justify-center mb-4">
               <div className="relative w-24 h-24">
-                <button
-                  onClick={handleUploadImage}
-                  className="rounded-full w-24 h-24 overflow-hidden relative"
-                >
+                <button onClick={handleUploadImage} className="rounded-full w-24 h-24 overflow-hidden relative">
                   {uploading && (
                     <div className="absolute inset-0 bg-black bg-opacity-50 z-10 flex items-center justify-center rounded-full">
-                      <div className="text-white text-sm animate-pulse">
-                        Uploading...
-                      </div>
+                      <div className="text-white text-sm animate-pulse">Uploading...</div>
                     </div>
                   )}
                   {user.profilePic ? (
                     <img
-                      src={user.profilePic}
+                      src={user.profilePic || "/placeholder.svg"}
                       alt="Profile"
                       className={`rounded-full w-full h-full border-2 border-white object-cover transition-all ${
                         uploading ? "blur-sm" : ""
@@ -197,9 +239,7 @@ export const Dashboard = () => {
                   )}
                 </button>
               </div>
-              <span className="text-center text-sm w-full mt-2">
-                Upload Image
-              </span>
+              <span className="text-center text-sm w-full mt-2">Upload Image</span>
             </div>
 
             <input
@@ -216,14 +256,17 @@ export const Dashboard = () => {
               <strong>{user.fullname}</strong>
             </p>
 
-            <div className="mt-6">
-              <div className="grid grid-cols-2 mt-5  sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
+            <div className="relative mt-6">
+              <div className="grid grid-cols-2 mt-5 sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
                 {user.links.slice(0, 6).map((link, index) => (
-                  <motion.a
+                  <motion.div
                     key={link._id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    onClick={() => {
+                      setSelectedLink(link)
+                      setTitle(link.title)
+                      setUrl(link.url)
+                      setBgIndex(randomImage.findIndex((img) => img === randomImage[index % randomImage.length]) || 0)
+                    }}
                     whileHover={{
                       scale: 0.98,
                       rotate: -1,
@@ -248,23 +291,72 @@ export const Dashboard = () => {
                         damping: 15,
                       },
                     }}
-                    className="relative block rounded-xl border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30 bg-cover bg-center"
+                    className={`cursor-pointer relative block rounded-xl border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30 bg-cover bg-center ${
+                      updatingLinkId === link._id ? "pointer-events-none" : ""
+                    }`}
                     style={{
-                      backgroundImage: `url(${
-                        randomImage[index % randomImage.length]
-                      })`,
+                      backgroundImage: `url(${link.backgroundImage || randomImage[index % randomImage.length]})`,
                       transformOrigin: "left bottom",
                     }}
                   >
-                    <div className="h-40 flex items-center justify-center rounded-xl bg-black/40 backdrop-blur-[1.3px]">
+                    <div
+                      className={`h-40 flex items-center justify-center rounded-xl bg-black/40 backdrop-blur-[1.3px] ${
+                        updatingLinkId === link._id ? "blur-sm" : ""
+                      }`}
+                    >
+                      {updatingLinkId === link._id && (
+                        <div className="absolute inset-0 flex items-center justify-center z-10">
+                          <div className="text-white text-sm animate-pulse">Updating...</div>
+                        </div>
+                      )}
                       <h3 className="text-lg text-white text-center font-semibold w-full px-4 py-2">
                         {link.title.toUpperCase()}
                       </h3>
                     </div>
-                  </motion.a>
+                  </motion.div>
                 ))}
               </div>
             </div>
+            {selectedLink && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-md z-50">
+                <div className="bg-[#1f1f1f] rounded-xl p-6 w-[90%] max-w-md shadow-lg">
+                  <h2 className="text-xl font-bold text-white mb-4">Edit Link</h2>
+                  <label className="block mb-2 text-white">Title</label>
+                  <input
+                    className="w-full px-3 py-2 rounded bg-zinc-800 text-white mb-4"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <label className="block mb-2 text-white">URL</label>
+                  <input
+                    className="w-full px-3 py-2 rounded bg-zinc-800 text-white mb-4"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                  />
+                  <label className="block mb-2 text-white">Card Background</label>
+                  <div className="flex gap-2 overflow-x-auto mb-4">
+                    {randomImage.map((img, i) => (
+                      <div
+                        key={i}
+                        className={`w-16 h-16 rounded-lg cursor-pointer bg-cover bg-center border-2 ${
+                          i === bgIndex ? "border-cyan-400" : "border-transparent"
+                        }`}
+                        style={{ backgroundImage: `url(${img})` }}
+                        onClick={() => setBgIndex(i)}
+                      ></div>
+                    ))}
+                  </div>
+                  <div className="flex justify-end gap-2">
+                    <button className="px-4 py-2 rounded bg-red-500 text-white" onClick={() => setSelectedLink(null)}>
+                      Cancel
+                    </button>
+                    <button className="px-4 py-2 rounded bg-cyan-600 text-white" onClick={handleSave}>
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <SkeletonLoader />
@@ -281,19 +373,13 @@ export const Dashboard = () => {
 
           <button onClick={() => setIsFormOpen(true)}>
             <span className="text-2xl w-full">
-              <FontAwesomeIcon
-                icon={faSquarePlus}
-                style={{ color: "#ffffff" }}
-              />
+              <FontAwesomeIcon icon={faSquarePlus} style={{ color: "#ffffff" }} />
             </span>
           </button>
 
           <button onClick={handleLogout}>
             <span className="text-2xl w-full">
-              <FontAwesomeIcon
-                icon={faRightFromBracket}
-                style={{ color: "#ffffff" }}
-              />
+              <FontAwesomeIcon icon={faRightFromBracket} style={{ color: "#ffffff" }} />
             </span>
           </button>
         </span>
@@ -310,7 +396,7 @@ export const Dashboard = () => {
             drag="y"
             dragConstraints={{ top: 0, bottom: 100 }}
             onDragEnd={(_, info) => {
-              if (info.offset.y > 50) setIsFormOpen(false);
+              if (info.offset.y > 50) setIsFormOpen(false)
             }}
           >
             <div className="w-full text-center border-b border-gray-500 pb-3 mb-4">
@@ -353,17 +439,10 @@ export const Dashboard = () => {
               </div>
 
               <div className="flex justify-between mt-6">
-                <button
-                  type="button"
-                  onClick={() => setIsFormOpen(false)}
-                  className="text-red-400"
-                >
+                <button type="button" onClick={() => setIsFormOpen(false)} className="text-red-400">
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="bg-cyan-500 px-4 py-2 rounded font-semibold"
-                >
+                <button type="submit" className="bg-cyan-500 px-4 py-2 rounded font-semibold">
                   Add Link
                 </button>
               </div>
@@ -372,7 +451,7 @@ export const Dashboard = () => {
         )}
       </AnimatePresence>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard
