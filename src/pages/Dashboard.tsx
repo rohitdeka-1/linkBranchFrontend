@@ -8,6 +8,7 @@ import {
   faSquarePlus,
   faRightFromBracket,
   faBars,
+  faLink,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import SkeletonLoader from "./components/Dashboard/Loader";
@@ -39,6 +40,7 @@ const randomImage = [
 const randomIndex = Math.floor(Math.random() * randomImage.length);
 console.log(randomIndex);
 
+
 export const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -50,6 +52,18 @@ export const Dashboard = () => {
     title: "",
     platform: "",
   });
+
+  const [copySuccess, setCopySuccess] = useState(false);
+
+  const handleCopyLink = () => {
+    if (user?.username) {
+      const publicProfileLink = `${window.location.origin}/${user.username}`;
+      navigator.clipboard.writeText(publicProfileLink).then(() => {
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000); // Reset after 2 seconds
+      });
+    }
+  };
 
   const [selectedLink, setSelectedLink] = useState<{
     _id: string;
@@ -213,6 +227,7 @@ export const Dashboard = () => {
     }
   };
 
+
   return (
     <div className="relative font-thin">
       <div className="bg-gradient-to-b from-[#1c1c2b] via-[#0d0d1f] to-[#000000] min-h-screen text-white p-5">
@@ -266,7 +281,18 @@ export const Dashboard = () => {
 
               <p className="text-center font-bold text-xl">
                 <strong>{user.fullname}</strong>
+                <button
+                  onClick={handleCopyLink}
+                  className="ml-2 text-white  text-sm rounded-lg transition"
+                >
+                  <FontAwesomeIcon icon={faLink} />
+                </button>
+      
+              {copySuccess && (
+                <p className="text-green-400 absolute z-10 left-0 right-0 text-sm mt-2">Link copied!</p>
+              )}
               </p>
+              
             </div>
 
             <input
