@@ -6,8 +6,6 @@ import Logo from "../components/Logo";
 import axios from "../../utils/axios";
 import { isAxiosError } from "axios";
 
-
-
 const Register = () => {
   const backendURI = `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/register`;
 
@@ -26,6 +24,8 @@ const Register = () => {
     animation: "animate-slide-in" | "animate-slide-out";
   } | null>(null);
 
+  const [loading, setLoading] = useState(false); // Loading state
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setNotification(null);
@@ -33,6 +33,7 @@ const Register = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     try {
       const res = await axios.post(backendURI, formData, {
         withCredentials: true,
@@ -56,7 +57,7 @@ const Register = () => {
         });
         setTimeout(() => navigate("/dashboard"), 400); // Wait for slide-out animation to finish
       }, 1500);
-    } catch (err: any ) {
+    } catch (err: any) {
       if (isAxiosError(err) && err.response) {
         if (err.response.status === 409) {
           setNotification({
@@ -71,8 +72,7 @@ const Register = () => {
             type: "error",
             animation: "animate-slide-in",
           });
-        }
-        else if (err.response.status === 422) {
+        } else if (err.response.status === 422) {
           setNotification({
             message: "Password should be greater than 3 characters.",
             type: "error",
@@ -94,15 +94,8 @@ const Register = () => {
         });
       }
       console.error("Error during registration:", err);
-
-      // Automatically clear the notification after 1.5 seconds
-      setTimeout(() => {
-        setNotification((prev) =>
-          prev
-            ? { ...prev, animation: "animate-slide-out" }
-            : null
-        );
-      }, 1500);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -217,9 +210,14 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full bg-slate-700 h-12 mt-4 hover:bg-slate-800 text-white font-semibold py-2 rounded-md transition duration-200"
+              className="w-full bg-slate-700 h-12 mt-4 hover:bg-slate-800 text-white font-semibold py-2 rounded-md transition duration-200 flex items-center justify-center"
+              disabled={loading} 
             >
-              Register
+              {loading ? (
+                <div className="loader w-5 h-5 border-2 border-t-2 border-white rounded-full animate-spin"></div>
+              ) : (
+                "Register"
+              )}
             </button>
           </form>
           <p className="text-white mt-3 text-sm">

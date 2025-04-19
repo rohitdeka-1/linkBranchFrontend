@@ -21,6 +21,8 @@ const Login = () => {
     animation: "animate-slide-in" | "animate-slide-out";
   } | null>(null);
 
+  const [loading, setLoading] = useState(false); // Loading state
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setNotification(null); // Clear notification when user starts typing
@@ -28,26 +30,25 @@ const Login = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     try {
       const res = await axios.post(backendURI, formData, {
-        withCredentials: true, 
+        withCredentials: true, // Send cookies with the request
       });
-
-      
 
       console.log("Logged in successfully:", res.data);
 
       // Show success notification
       setNotification({
-        message: res.data.message,
+        message: res.data.message || "Login successful!",
         type: "success",
         animation: "animate-slide-in",
       });
 
-      // Redirect to dashboard after 1.5 seconds
+      // Redirect to dashboard after a short delay
       setTimeout(() => {
         setNotification({
-          message: res.data.message,
+          message: res.data.message || "Login successful!",
           type: "success",
           animation: "animate-slide-out",
         });
@@ -67,14 +68,13 @@ const Login = () => {
             type: "error",
             animation: "animate-slide-in",
           });
-        }else if(err.response.status === 422){
+        } else if (err.response.status === 422) {
           setNotification({
-            message: "Password should be greater than 3 characters",
+            message: "Password should be greater than 3 characters.",
             type: "error",
             animation: "animate-slide-in",
           });
-        }
-         else {
+        } else {
           setNotification({
             message: "An error occurred during login. Please try again.",
             type: "error",
@@ -90,15 +90,8 @@ const Login = () => {
         });
       }
       console.error("Error during login:", err);
-
-      // Automatically clear the notification after 1.5 seconds
-      setTimeout(() => {
-        setNotification((prev) =>
-          prev
-            ? { ...prev, animation: "animate-slide-out" }
-            : null
-        );
-      }, 2500);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -174,12 +167,16 @@ const Login = () => {
                 Password
               </label>
             </div>
-
             <button
               type="submit"
-              className="w-full bg-slate-700 h-12 mt-4 hover:bg-slate-800 text-white font-semibold py-2 rounded-md transition duration-200"
+              className="w-full bg-slate-700 h-12 mt-4 hover:bg-slate-800 text-white font-semibold py-2 rounded-md transition duration-200 flex items-center justify-center"
+              disabled={loading} // Disable button while loading
             >
-              Login
+              {loading ? (
+                <div className="loader w-5 h-5 border-2 border-t-2 border-white rounded-full animate-spin"></div>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
           <p className="text-white mt-3 text-sm">

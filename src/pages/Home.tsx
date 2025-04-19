@@ -31,7 +31,7 @@ const Home = () => {
           </p>
         </div>
 
-        {/* Buttons + Cover Layout */}
+ 
         <div className="flex flex-col md:flex-row px-4 mt-10 w-full space-y-6 md:space-y-0 md:space-x-6 lg:justify-center lg:w-[60rem] lg:items-center">
           {/* Left - Buttons */}
           <div className="flex flex-col w-full md:w-1/2 space-y-4">
@@ -49,7 +49,7 @@ const Home = () => {
             </Link>
           </div>
 
-          {/* Right - Image */}
+ 
           <div className="w-full md:w-1/2 flex justify-center items-center">
             <img
               src="./coverPhoto.png"
