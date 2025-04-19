@@ -114,7 +114,7 @@ const Login = () => {
       <div className="min-h-screen flex items-center justify-center relative flex-col pb-40">
         {notification && (
           <div
-            className={`fixed top-[4.5rem] right-5 p-4 rounded text-white transition-transform transform ${
+            className={`fixed top-[4.5rem] z-50 right-5 p-4 rounded text-white transition-transform transform ${
               notification.type === "success" ? "bg-green-500" : "bg-red-500"
             } ${notification.animation}`}
           >
@@ -170,7 +170,7 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-slate-700 h-12 mt-4 hover:bg-slate-800 text-white font-semibold py-2 rounded-md transition duration-200 flex items-center justify-center"
-              disabled={loading} // Disable button while loading
+              disabled={loading} 
             >
               {loading ? (
                 <div className="loader w-5 h-5 border-2 border-t-2 border-white rounded-full animate-spin"></div>

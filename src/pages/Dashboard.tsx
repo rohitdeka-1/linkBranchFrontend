@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faSquarePlus,
   faRightFromBracket,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
+import SkeletonLoader from "./components/Dashboard/Loader";
 
 type User = {
   fullname: string;
@@ -22,6 +24,16 @@ type User = {
     order: number;
   }>;
 };
+
+const randomImage = [
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745083949/ran3_atzbov.gif",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745083944/ran4_vm8qgc.jpg",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745083944/ran2_mrda16.png",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745085092/1203d8dbd23787123dc714de1c07df09_j9ivav.gif"
+];
+
+const randomIndex = Math.floor(Math.random() * randomImage.length);
+console.log(randomIndex);
 
 export const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -139,8 +151,6 @@ export const Dashboard = () => {
 
   return (
     <div className="relative">
-      {/* Blur background and show loading indicator when uploading */}
-
       <div className="bg-gradient-to-b from-[#2b2a2a] to-black min-h-screen text-white p-5">
         <h1 className="text-3xl text-center mb-4 font-bold">Dashboard</h1>
 
@@ -148,33 +158,30 @@ export const Dashboard = () => {
           <p className="text-red-400 slide-in">{error}</p>
         ) : user ? (
           <div className="space-y-2">
-            {/* Profile Photo Section */}
             <div className="relative flex flex-col items-center justify-center mb-4">
               <div className="relative w-24 h-24">
                 <button
                   onClick={handleUploadImage}
                   className="rounded-full w-24 h-24 overflow-hidden relative"
                 >
+                  {uploading && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 z-10 flex items-center justify-center rounded-full">
+                      <div className="text-white text-sm animate-pulse">
+                        Uploading...
+                      </div>
+                    </div>
+                  )}
                   {user.profilePic ? (
-                    <>
-                      {uploading && (
-                        <div className="absolute inset-0 bg-black bg-opacity-50 z-10 flex items-center justify-center rounded-full">
-                          <div className="text-white text-sm animate-pulse">
-                            Uploading...
-                          </div>
-                        </div>
-                      )}
-                      <img
-                        src={user.profilePic}
-                        alt="Profile"
-                        className={`rounded-full w-full h-full border-2 border-white object-cover transition-all ${
-                          uploading ? "blur-sm" : ""
-                        }`}
-                      />
-                    </>
+                    <img
+                      src={user.profilePic}
+                      alt="Profile"
+                      className={`rounded-full w-full h-full border-2 border-white object-cover transition-all ${
+                        uploading ? "blur-sm" : ""
+                      }`}
+                    />
                   ) : (
                     <div
-                      className={`rounded-ful hover:bg-slate-600 w-full h-full bg-gray-700 flex items-center justify-center text-xl ${
+                      className={`rounded-full hover:bg-slate-600 w-full h-full bg-gray-700 flex items-center justify-center text-xl ${
                         uploading ? "blur-sm" : ""
                       }`}
                     >
@@ -188,7 +195,6 @@ export const Dashboard = () => {
               </span>
             </div>
 
-            {/* Hidden File Input */}
             <input
               type="file"
               accept="image/*"
@@ -202,10 +208,10 @@ export const Dashboard = () => {
             <p className="text-center text-xl">
               <strong>{user.fullname}</strong>
             </p>
+
             <div className="mt-6">
-              <h2 className="text-2xl font-semibold mb-4">Links</h2>
-              <div className="grid grid-cols-2  sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
-                {user.links.map((link) => (
+              <div className="grid grid-cols-2 mt-5  sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
+                {user.links.slice(0, 6).map((link, index) => (
                   <motion.a
                     key={link._id}
                     href={link.url}
@@ -219,7 +225,7 @@ export const Dashboard = () => {
                       transition: {
                         type: "tween",
                         stiffness: 200,
-                        duration:0.15,
+                        duration: 0.15,
                         damping: 2,
                       },
                     }}
@@ -231,18 +237,22 @@ export const Dashboard = () => {
                       transition: {
                         type: "tween",
                         stiffness: 200,
-                        duration:0.13,
+                        duration: 0.1,
                         damping: 15,
                       },
                     }}
-                    className="block bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30"
-                    style={{ transformOrigin: "left bottom" }}
+                    className="relative block rounded-xl border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30 bg-cover bg-center"
+                    style={{
+                      backgroundImage: `url(${
+                        randomImage[index % randomImage.length]
+                      })`,
+                      transformOrigin: "left bottom",
+                    }}
                   >
-                    <div className="flex items-center">
-                      <div>
-                        <h3 className="text-lg font-semibold">{link.title}</h3>
-                        <p className="text-sm text-gray-400">{link.url}</p>
-                      </div>
+                    <div className="h-40 flex items-center justify-center rounded-xl bg-black/40 backdrop-blur-[1.3px]">
+                      <h3 className="text-lg text-white text-center font-semibold w-full px-4 py-2">
+                        {link.title.toUpperCase()}
+                      </h3>
                     </div>
                   </motion.a>
                 ))}
@@ -250,19 +260,15 @@ export const Dashboard = () => {
             </div>
           </div>
         ) : (
-          <p>Loading user data...</p>
+          <SkeletonLoader />
         )}
       </div>
 
-      {/* Bottom Navigation */}
       <div className="font-bold text-md flex items-center justify-center fixed w-full bottom-0 left-0 right-0 py-6 border-cyan-400">
         <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border w-3/4 py-2 rounded-3xl">
           <button>
             <span className="text-2xl w-full">
-              <FontAwesomeIcon
-                icon={faSquarePlus}
-                style={{ color: "#ffffff" }}
-              />
+              <FontAwesomeIcon icon={faBars} style={{ color: "#ffffff" }} />
             </span>
           </button>
 
@@ -286,7 +292,6 @@ export const Dashboard = () => {
         </span>
       </div>
 
-      {/* Add Link Form */}
       <AnimatePresence>
         {isFormOpen && (
           <motion.div
@@ -298,7 +303,7 @@ export const Dashboard = () => {
             drag="y"
             dragConstraints={{ top: 0, bottom: 100 }}
             onDragEnd={(_, info) => {
-              if (info.point.y > 100) setIsFormOpen(false);
+              if (info.offset.y > 50) setIsFormOpen(false);
             }}
           >
             <div className="w-full text-center border-b border-gray-500 pb-3 mb-4">
@@ -307,7 +312,7 @@ export const Dashboard = () => {
 
             <h2 className="text-xl font-semibold mb-4">Add New Link</h2>
 
-            <form className="space-y-4" onSubmit={handleAddLink}>
+            <form className="space-y-10 " onSubmit={handleAddLink}>
               <div>
                 <label htmlFor="title" className="block mb-1">
                   Link Title

@@ -118,7 +118,7 @@ const Register = () => {
       <div className="min-h-screen flex items-center justify-center relative flex-col pb-40">
         {notification && (
           <div
-            className={`fixed top-[4.5rem] right-5 p-4 rounded text-white transition-transform transform ${
+            className={`fixed top-[4.5rem] z-50 right-5 p-4 rounded text-white transition-transform transform ${
               notification.type === "success" ? "bg-green-500" : "bg-red-500"
             } ${notification.animation}`}
           >
