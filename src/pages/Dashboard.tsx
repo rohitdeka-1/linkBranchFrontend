@@ -27,6 +27,7 @@ export const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const [newLink, setNewLink] = useState({
@@ -76,6 +77,8 @@ export const Dashboard = () => {
     const formData = new FormData();
     formData.append("profilePic", file);
 
+    setUploading(true); // Start uploading state
+
     try {
       const res = await axios.post(image_URI, formData, {
         withCredentials: true,
@@ -87,6 +90,8 @@ export const Dashboard = () => {
       });
     } catch (err) {
       console.error("Error uploading image:", err);
+    } finally {
+      setUploading(false); // Stop uploading state
     }
   };
 
@@ -116,79 +121,103 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-[#2b2a2a] to-black min-h-screen text-white p-5">
-      <h1 className="text-3xl text-center mb-4 font-bold">Dashboard</h1>
+    <div className="relative">
+      {/* Blur background and show loading indicator when uploading */}
 
-      {error ? (
-        <p className="text-red-400 slide-in">{error}</p>
-      ) : user ? (
-        <div className="space-y-2">
-          <div className="flex flex-col items-center justify-center mb-4">
-            {user.profilePic ? (
-              <button
-                onClick={handleUploadImage}
-                className="rounded-full w-24 h-24"
-              >
-                <img
-                  src={user.profilePic}
-                  alt="Profile"
-                  className="rounded-full w-24 h-24 border-2 border-white"
-                />
-              </button>
-            ) : (
-              <button
-                onClick={handleUploadImage}
-                className="rounded-full hover:bg-red-300 w-24 h-24 bg-gray-700 flex items-center justify-center text-xl"
-              >
-                {user.fullname?.charAt(0)}
-              </button>
-            )}
-            <span className="text-center text-sm w-full">Upload Image</span>
-          </div>
+      <div className="bg-gradient-to-b from-[#2b2a2a] to-black min-h-screen text-white p-5">
+        <h1 className="text-3xl text-center mb-4 font-bold">Dashboard</h1>
 
-          <input
-            type="file"
-            accept="image/*"
-            name="profilePic"
-            id="profilePic"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-          />
-
-          <p className="text-center text-xl">
-            <strong>{user.fullname}</strong>
-          </p>
-          <div className="mt-6">
-            <h2 className="text-2xl font-semibold mb-4">Links</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {user.links.map((link) => (
-                <motion.a
-                  key={link._id}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="block bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30"
+        {error ? (
+          <p className="text-red-400 slide-in">{error}</p>
+        ) : user ? (
+          <div className="space-y-2">
+            {/* Profile Photo Section */}
+            <div className="relative flex flex-col items-center justify-center mb-4">
+              <div className="relative w-24 h-24">
+                <button
+                  onClick={handleUploadImage}
+                  className="rounded-full w-24 h-24 overflow-hidden relative"
                 >
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-cyan-600 w-10 h-10 flex items-center justify-center rounded-full text-white font-bold text-xl">
-                      {link.title.charAt(0).toUpperCase()}
+                  {user.profilePic ? (
+                    <>
+                      {uploading && (
+                        <div className="absolute inset-0 bg-black bg-opacity-50 z-10 flex items-center justify-center rounded-full">
+                          <div className="text-white text-sm animate-pulse">
+                            Uploading...
+                          </div>
+                        </div>
+                      )}
+                      <img
+                        src={user.profilePic}
+                        alt="Profile"
+                        className={`rounded-full w-full h-full border-2 border-white object-cover transition-all ${
+                          uploading ? "blur-sm" : ""
+                        }`}
+                      />
+                    </>
+                  ) : (
+                    <div
+                      className={`rounded-full hover:bg-red-300 w-full h-full bg-gray-700 flex items-center justify-center text-xl ${
+                        uploading ? "blur-sm" : ""
+                      }`}
+                    >
+                      {user.fullname?.charAt(0)}
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold">{link.title}</h3>
-                      <p className="text-sm text-gray-400">{link.url}</p>
+                  )}
+                </button>
+              </div>
+              <span className="text-center text-sm w-full mt-2">
+                Upload Image
+              </span>
+            </div>
+
+            {/* Hidden File Input */}
+            <input
+              type="file"
+              accept="image/*"
+              name="profilePic"
+              id="profilePic"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
+
+            <p className="text-center text-xl">
+              <strong>{user.fullname}</strong>
+            </p>
+            <div className="mt-6">
+              <h2 className="text-2xl font-semibold mb-4">Links</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {user.links.map((link) => (
+                  <motion.a
+                    key={link._id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="block bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="bg-cyan-600 w-10 h-10 flex items-center justify-center rounded-full text-white font-bold text-xl">
+                        {link.title.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold">{link.title}</h3>
+                        <p className="text-sm text-gray-400">{link.url}</p>
+                      </div>
                     </div>
-                  </div>
-                </motion.a>
-              ))}
+                  </motion.a>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <p>Loading user data...</p>
-      )}
+        ) : (
+          <p>Loading user data...</p>
+        )}
+      </div>
+
+      {/* Bottom Navigation */}
       <div className="font-bold text-md flex items-center justify-center fixed w-full bottom-0 left-0 right-0 py-6 border-cyan-400">
         <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border w-3/4 py-2 rounded-3xl">
           <button>
@@ -220,6 +249,7 @@ export const Dashboard = () => {
         </span>
       </div>
 
+      {/* Add Link Form */}
       <AnimatePresence>
         {isFormOpen && (
           <motion.div
