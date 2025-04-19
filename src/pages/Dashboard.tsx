@@ -30,6 +30,7 @@ export const Dashboard = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+
   const [newLink, setNewLink] = useState({
     title: "",
     platform: "",
@@ -77,7 +78,7 @@ export const Dashboard = () => {
     const formData = new FormData();
     formData.append("profilePic", file);
 
-    setUploading(true); // Start uploading state
+    setUploading(true); 
 
     try {
       const res = await axios.post(image_URI, formData, {
@@ -91,7 +92,7 @@ export const Dashboard = () => {
     } catch (err) {
       console.error("Error uploading image:", err);
     } finally {
-      setUploading(false); // Stop uploading state
+      setUploading(false);
     }
   };
 
@@ -104,8 +105,8 @@ export const Dashboard = () => {
     console.log("Link submitted:", newLink);
 
     try {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/links`,
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URI}/api/v1/user`,
         {
           platform: newLink.title,
           url: newLink.platform,
