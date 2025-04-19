@@ -230,7 +230,7 @@ export const Dashboard = () => {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 100 }}
-            onDragEnd={(event, info) => {
+            onDragEnd={(_, info) => {
               if (info.point.y > 100) setIsFormOpen(false);
             }}
           >
