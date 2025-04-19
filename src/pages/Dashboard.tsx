@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import axios from "../utils/axios";
 import { isAxiosError } from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
+
 import {
   faSquarePlus,
   faRightFromBracket,
@@ -9,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import SkeletonLoader from "./components/Dashboard/Loader";
+
 
 type User = {
   fullname: string;
@@ -28,9 +31,13 @@ type User = {
 const randomImage = [
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745083949/ran3_atzbov.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745083944/ran4_vm8qgc.jpg",
-  "https://res.cloudinary.com/doejdsmym/image/upload/v1745083944/ran2_mrda16.png",
-  "https://res.cloudinary.com/doejdsmym/image/upload/v1745085092/1203d8dbd23787123dc714de1c07df09_j9ivav.gif"
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745086042/astra_tsa2ff.gif",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745086883/neon_a7ok58.gif",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745085092/1203d8dbd23787123dc714de1c07df09_j9ivav.gif",
+
 ];
+
+
 
 const randomIndex = Math.floor(Math.random() * randomImage.length);
 console.log(randomIndex);
@@ -41,7 +48,7 @@ export const Dashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
+  const navigate = useNavigate();
   const [newLink, setNewLink] = useState({
     title: "",
     platform: "",
@@ -142,7 +149,7 @@ export const Dashboard = () => {
       );
       setUser(null);
       setError(null);
-      window.location.href = "/login";
+      navigate("/login");
     } catch (err) {
       console.error("Error logging out:", err);
       setError("Error logging out. Please try again.");
