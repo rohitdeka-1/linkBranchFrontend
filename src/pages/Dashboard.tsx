@@ -59,7 +59,6 @@ export const Dashboard = () => {
         }
       }
     };
-
     fetchMe();
   }, []);
 
@@ -118,6 +117,20 @@ export const Dashboard = () => {
       setIsFormOpen(false);
     } catch (err) {
       console.error("Error adding link:", err);
+}
+  };
+  const handleLogout = async () => { 
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URI}/api/v1/auth/logout`,
+        { withCredentials: true }
+      );
+      setUser(null);  
+      setError(null);  
+      window.location.href = "/login";  
+    } catch (err) {
+      console.error("Error logging out:", err);
+      setError("Error logging out. Please try again.");
     }
   };
 
@@ -239,7 +252,7 @@ export const Dashboard = () => {
             </span>
           </button>
 
-          <button>
+          <button onClick={handleLogout}>
             <span className="text-2xl w-full">
               <FontAwesomeIcon
                 icon={faRightFromBracket}
