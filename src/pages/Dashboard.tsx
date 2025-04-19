@@ -398,6 +398,33 @@ export const Dashboard = () => {
                     ))}
                   </div>
                   <div className="flex justify-end gap-2">
+
+                    <button
+                      className="px-4 py-2 rounded bg-red-500 text-white"
+                      onClick={async () => {
+                        try {
+                          await axios.delete(
+                            `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/${selectedLink._id}`,
+                            { withCredentials: true }
+                          );
+                          setUser((prevUser) => {
+                            if (!prevUser) return prevUser;
+                            return {
+                              ...prevUser,
+                              links: prevUser.links.filter(
+                                (link) => link._id !== selectedLink._id
+                              ),
+                            };
+                          });
+                        } catch (err) {
+                          console.error("Error deleting link:", err);
+                        } finally {
+                          setSelectedLink(null);
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                     <button
                       className="px-4 py-2 rounded bg-red-500 text-white"
                       onClick={() => setSelectedLink(null)}
