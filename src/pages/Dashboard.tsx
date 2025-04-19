@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import axios from "../utils/axios";
 import { isAxiosError } from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquarePlus, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSquarePlus,
+  faRightFromBracket,
+} from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 
 type User = {
@@ -58,7 +61,9 @@ export const Dashboard = () => {
     fetchMe();
   }, []);
 
-  const image_URI = `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/upload-image`;
+  const image_URI = `${
+    import.meta.env.VITE_BACKEND_URI
+  }/api/v1/user/upload-image`;
 
   const handleUploadImage = () => {
     fileInputRef.current?.click();
@@ -92,13 +97,17 @@ export const Dashboard = () => {
   const handleAddLink = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Link submitted:", newLink);
-  
+
     try {
-      await axios.post(`${import.meta.env.VITE_BACKEND_URI}/api/v1/user/links`, {
-        platform: newLink.title,  
-        url: newLink.platform,    
-      }, { withCredentials: true });
-  
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/links`,
+        {
+          platform: newLink.title,
+          url: newLink.platform,
+        },
+        { withCredentials: true }
+      );
+
       setNewLink({ title: "", platform: "" });
       setIsFormOpen(false);
     } catch (err) {
@@ -116,7 +125,10 @@ export const Dashboard = () => {
         <div className="space-y-2">
           <div className="flex flex-col items-center justify-center mb-4">
             {user.profilePic ? (
-              <button onClick={handleUploadImage} className="rounded-full w-24 h-24">
+              <button
+                onClick={handleUploadImage}
+                className="rounded-full w-24 h-24"
+              >
                 <img
                   src={user.profilePic}
                   alt="Profile"
@@ -147,55 +159,67 @@ export const Dashboard = () => {
           <p className="text-center text-xl">
             <strong>{user.fullname}</strong>
           </p>
-          <p>
-            <strong>Username:</strong> {user.username}
-          </p>
-          <p>
-            <strong>Email:</strong> {user.email}
-          </p>
-          <p>
-            <strong>Bio:</strong> {user.bio || "No bio yet"}
-          </p>
-          <p>
-            <strong>Links:</strong>
-          </p>
-          <ul>
-            {user.links.map((link) => (
-              <li key={link._id}>
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  {link.title}
-                </a>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-6">
+            <h2 className="text-2xl font-semibold mb-4">Links</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {user.links.map((link) => (
+                <motion.a
+                  key={link._id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="block bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30"
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="bg-cyan-600 w-10 h-10 flex items-center justify-center rounded-full text-white font-bold text-xl">
+                      {link.title.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">{link.title}</h3>
+                      <p className="text-sm text-gray-400">{link.url}</p>
+                    </div>
+                  </div>
+                </motion.a>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
         <p>Loading user data...</p>
       )}
       <div className="font-bold text-md flex items-center justify-center fixed w-full bottom-0 left-0 right-0 py-6 border-cyan-400">
         <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border w-3/4 py-2 rounded-3xl">
-
           <button>
-            <span className="text-3xl w-full">
-              <FontAwesomeIcon icon={faSquarePlus} style={{ color: "#ffffff" }} />
+            <span className="text-2xl w-full">
+              <FontAwesomeIcon
+                icon={faSquarePlus}
+                style={{ color: "#ffffff" }}
+              />
             </span>
           </button>
 
           <button onClick={() => setIsFormOpen(true)}>
-            <span className="text-3xl w-full">
-              <FontAwesomeIcon icon={faSquarePlus} style={{ color: "#ffffff" }} />
+            <span className="text-2xl w-full">
+              <FontAwesomeIcon
+                icon={faSquarePlus}
+                style={{ color: "#ffffff" }}
+              />
             </span>
           </button>
 
           <button>
-            <span className="text-3xl w-full">
-              <FontAwesomeIcon icon={faRightFromBracket} style={{ color: "#ffffff" }} />
+            <span className="text-2xl w-full">
+              <FontAwesomeIcon
+                icon={faRightFromBracket}
+                style={{ color: "#ffffff" }}
+              />
             </span>
           </button>
         </span>
       </div>
 
-      {/* Slide Up Form */}
       <AnimatePresence>
         {isFormOpen && (
           <motion.div
