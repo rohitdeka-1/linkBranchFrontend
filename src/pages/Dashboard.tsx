@@ -41,12 +41,10 @@ const randomImage = [
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745269160/950x534-dark-orange-stone-free-website-background-image_a9v7ph.jpg",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745269174/3840x2160-unbleached-silk-solid-color-background_sa1mxv.jpg",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745269176/3840x2160-smitten-solid-color-background_ykgigm.jpg",
-  
 ];
 
 const randomIndex = Math.floor(Math.random() * randomImage.length);
 console.log(randomIndex);
-
 
 export const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -254,49 +252,47 @@ export const Dashboard = () => {
     }
   };
 
-  
-const [isEditNameOpen, setIsEditNameOpen] = useState(false);
-const [newFullName, setNewFullName] = useState(user?.fullname || "");
+  const [isEditNameOpen, setIsEditNameOpen] = useState(false);
+  const [newFullName, setNewFullName] = useState(user?.fullname || "");
 
-const handleUpdateFullName = async () => {
-  const prevFullName = user?.fullname;
-  setUser((prev) => ({ ...prev!, fullname: newFullName }));
+  const handleUpdateFullName = async () => {
+    const prevFullName = user?.fullname;
+    setUser((prev) => ({ ...prev!, fullname: newFullName }));
 
-  try {
-    const res = await axios.put(
-      `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/user-up`,
-      { fullname: newFullName },
-      { withCredentials: true }
-    );
-    setUser((prevUser) => ({
-      ...prevUser!,
-      fullname: res.data.fullname || newFullName,
-    }));
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/user-up`,
+        { fullname: newFullName },
+        { withCredentials: true }
+      );
+      setUser((prevUser) => ({
+        ...prevUser!,
+        fullname: res.data.fullname || newFullName,
+      }));
 
-    setNotification({
-      message: "Full name updated successfully!",
-      type: "success",
-      animation: "animate-slide-in",
-    });
-  } catch (err) {
-    console.error("Error updating full name:", err);
+      setNotification({
+        message: "Full name updated successfully!",
+        type: "success",
+        animation: "animate-slide-in",
+      });
+    } catch (err) {
+      console.error("Error updating full name:", err);
 
-  
-    setUser((prevUser) => ({
-      ...prevUser!,
-      fullname: prevFullName!,
-    }));
+      setUser((prevUser) => ({
+        ...prevUser!,
+        fullname: prevFullName!,
+      }));
 
-    setNotification({
-      message: "Failed to update full name. Please try again.",
-      type: "error",
-      animation: "animate-slide-in",
-    });
-  } finally {
-    setTimeout(() => setNotification(null), 2000);
-    setIsEditNameOpen(false); 
-  }
-};
+      setNotification({
+        message: "Failed to update full name. Please try again.",
+        type: "error",
+        animation: "animate-slide-in",
+      });
+    } finally {
+      setTimeout(() => setNotification(null), 2000);
+      setIsEditNameOpen(false);
+    }
+  };
 
   return (
     <div className={`relative font-thin ${isProcessing ? "blur-sm" : ""}`}>
@@ -374,8 +370,8 @@ const handleUpdateFullName = async () => {
                 )}
               </p>
               <p className="text-center text-sm font-thin text-gray-400 mt-1">
-    Total Profile Visits: {user.visitCount || 0}
-  </p>
+                Total Profile Visits: {user.visitCount || 0}
+              </p>
             </div>
 
             <input
@@ -567,10 +563,8 @@ const handleUpdateFullName = async () => {
       </div>
 
       <div className="font-bold text-md flex items-center justify-center fixed w-full bottom-0 left-0 right-0 py-1 border-cyan-400">
-        <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border w-3/4 py-2 rounded-3xl">
-          <button
-          onClick={() => setIsEditNameOpen(true)}
-          >
+        <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border w-3/4 py-1 backdrop-blur-3xl shadow-2xl rounded-3xl">
+          <button onClick={() => setIsEditNameOpen(true)}>
             <span className="text-2xl w-full">
               <FontAwesomeIcon icon={faPencil} style={{ color: "#ffffff" }} />
             </span>
@@ -596,33 +590,35 @@ const handleUpdateFullName = async () => {
         </span>
       </div>
       {isEditNameOpen && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-    <div className="bg-[#1f1f1f] rounded-lg p-6 w-[90%] max-w-md">
-      <h2 className="text-xl font-bold text-white mb-4">Update Full Name</h2>
-      <input
-        type="text"
-        value={newFullName}
-        onChange={(e) => setNewFullName(e.target.value)}
-        className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white mb-4"
-        placeholder="Enter new full name"
-      />
-      <div className="flex justify-end gap-2">
-        <button
-          onClick={() => setIsEditNameOpen(false)}
-          className="px-4 py-2 rounded bg-red-500 text-white"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleUpdateFullName}
-          className="px-4 py-2 rounded bg-cyan-500 text-white"
-        >
-          Save
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-[#1f1f1f] rounded-lg p-6 w-[90%] max-w-md">
+            <h2 className="text-xl font-bold text-white mb-4">
+              Update Full Name
+            </h2>
+            <input
+              type="text"
+              value={newFullName}
+              onChange={(e) => setNewFullName(e.target.value)}
+              className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white mb-4"
+              placeholder="Enter new full name"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsEditNameOpen(false)}
+                className="px-4 py-2 rounded bg-red-500 text-white"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateFullName}
+                className="px-4 py-2 rounded bg-cyan-500 text-white"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence>
         {isFormOpen && (
@@ -659,7 +655,7 @@ const handleUpdateFullName = async () => {
                   placeholder="Enter Title (e.g., Instagram)"
                   required
                 />
-              </div>  
+              </div>
 
               <div>
                 <label htmlFor="platform" className="block mb-1">
