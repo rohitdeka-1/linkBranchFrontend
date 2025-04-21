@@ -410,7 +410,7 @@ export const Dashboard = () => {
                   <label className="block mb-2 text-white">
                     Card Background
                   </label>
-                    <div className="grid grid-cols-4 grid-rows-3 gap-2 overflow-x-auto mb-4">
+                    <div className="grid grid-cols-4 grid-rows-3 gap-2 overflow-x-hidden mb-4">
                     {randomImage.map((img, i) => (
                       <div
                       key={i}

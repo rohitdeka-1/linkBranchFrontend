@@ -52,7 +52,7 @@ const Login = () => {
           type: "success",
           animation: "animate-slide-out",
         });
-        setTimeout(() => navigate("/dashboard"), 400); // Wait for slide-out animation to finish
+        setTimeout(() => navigate ("/dashboard"), 400); // Wait for slide-out animation to finish
       }, 1500);
     } catch (err: unknown) {
       if (isAxiosError(err) && err.response) {

@@ -128,7 +128,7 @@ const Register = () => {
 
         <Logo />
 
-        <div className="p-8 w-96 rounded-lg">
+        <div className="p-8 mt-10 md:mt-8 w-96 rounded-lg">
           <h1 className="text-3xl text-center text-white font-bold mb-6">
             Register
           </h1>
