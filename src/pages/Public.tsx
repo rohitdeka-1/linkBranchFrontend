@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axios";
 import { motion } from "framer-motion";
 import SkeletonLoader from "./components/Dashboard/Loader";
@@ -17,16 +17,28 @@ type User = {
 };
 
 const Public = () => {
-  const { username } = useParams<{ username: string }>(); 
+  const { username } = useParams<{ username: string }>();
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showPopup, setShowPopup] = useState(false); 
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`/api/v1/user/${username}`);
-        setUser(res.data.user);
+        
+        await axios.patch(`/api/v1/user/${username}/visit`);
+
+        
+        const res = await axios.get(`/api/v1/links/${username}`);
+        const { userDetails, links } = res.data.data;
+        setUser({
+          fullname: userDetails.fullname,
+          username: userDetails.username,
+          profilePic: userDetails.profilePic,
+          links,
+        });
         setError(null);
       } catch (err) {
         console.error("Error fetching user:", err);
@@ -39,6 +51,13 @@ const Public = () => {
     if (username) {
       fetchUser();
     }
+
+   
+    const timer = setTimeout(() => {
+      setShowPopup(true);
+    }, 7000);
+
+    return () => clearTimeout(timer); 
   }, [username]);
 
   if (loading) {
@@ -81,10 +100,10 @@ const Public = () => {
         </div>
 
         <div className="grid grid-cols-2 mt-5 sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
-          {user?.links.map((link, index) => (
+          {user?.links.map((link) => (
             <motion.div
               key={link._id}
-              onClick={() => window.open(link.url, "_blank")} // Redirect to link
+              onClick={() => window.open(link.url, "_blank")}
               whileHover={{
                 scale: 0.98,
                 rotate: -1,
@@ -111,8 +130,11 @@ const Public = () => {
               }}
               className="cursor-pointer relative block rounded-xl border border-gray-700 hover:border-cyan-400 transition-all duration-200 shadow-md hover:shadow-cyan-700/30 bg-cover bg-center"
               style={{
-                backgroundImage: `url(${link.backgroundImage})`,
-                transformOrigin: "left bottom",
+                backgroundImage: `url(${
+                  link.backgroundImage || "/fallback-image.jpg"
+                })`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
             >
               <div className="h-40 flex items-center justify-center rounded-xl bg-black/40 backdrop-blur-[1.3px]">
@@ -124,6 +146,26 @@ const Public = () => {
           ))}
         </div>
       </div>
+
+      {showPopup && (
+        <div className="fixed bottom-4 right-4 bg-black text-white p-4 text-sm rounded-lg shadow-lg z-50">
+          <div className="flex justify-between items-center">
+            <p className="text-sm">Want to create your own profile?</p>
+            <button
+              onClick={() => setShowPopup(false)}
+              className="text-gray-400 hover:text-white ml-4"
+            >
+              ✕
+            </button>
+          </div>
+          <button
+            onClick={() => navigate("/register")}
+            className="mt-2 text-sm px-3 py-2 bg-cyan-500 text-white rounded-lg hover:bg-cyan-600 transition-all"
+          >
+            Create Your Profile
+          </button>
+        </div>
+      )}
     </div>
   );
 };

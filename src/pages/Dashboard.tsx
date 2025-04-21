@@ -19,6 +19,7 @@ type User = {
   email: string;
   bio: string | null;
   profilePic: string | null;
+  visitCount: number;
   links: Array<{
     _id: string;
     title: string;
@@ -36,6 +37,11 @@ const randomImage = [
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745086042/astra_tsa2ff.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745086883/neon_a7ok58.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745085092/1203d8dbd23787123dc714de1c07df09_j9ivav.gif",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745269141/360_F_728363238_5geIcEjxz1hLsc0syqin0MSfEEdT5tae_ykqsk9.jpg",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745269160/950x534-dark-orange-stone-free-website-background-image_a9v7ph.jpg",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745269174/3840x2160-unbleached-silk-solid-color-background_sa1mxv.jpg",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745269176/3840x2160-smitten-solid-color-background_ykgigm.jpg",
+  
 ];
 
 const randomIndex = Math.floor(Math.random() * randomImage.length);
@@ -315,7 +321,7 @@ const handleUpdateFullName = async () => {
         ) : user ? (
           <div className="space-y-2">
             <div className="bg-black/50 rounded-xl p-4 mb-6">
-              <div className="relative flex flex-col items-center justify-center mb-4">
+              <div className="relative flex flex-col items-center justify-center mb-1">
                 <div className="relative w-24 h-24">
                   <button
                     onClick={handleUploadImage}
@@ -347,7 +353,7 @@ const handleUpdateFullName = async () => {
                     )}
                   </button>
                 </div>
-                <span className="text-center text-sm w-full mt-2">
+                <span className="text-center text-sm w-full mt-1">
                   Upload Image
                 </span>
               </div>
@@ -367,6 +373,9 @@ const handleUpdateFullName = async () => {
                   </p>
                 )}
               </p>
+              <p className="text-center text-sm font-thin text-gray-400 mt-1">
+    Total Profile Visits: {user.visitCount || 0}
+  </p>
             </div>
 
             <input
