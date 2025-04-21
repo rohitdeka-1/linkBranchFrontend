@@ -77,7 +77,7 @@ export const Dashboard = () => {
   const [url, setUrl] = useState("");
   const [bgIndex, setBgIndex] = useState(0);
   const [updatingLinkId, setUpdatingLinkId] = useState<string | null>(null);
-
+  const [isProcessing,setIsProcessing] = useState<Boolean>(false);
   const fetchMe = async () => {
     try {
       const res = await axios.get(
@@ -148,6 +148,7 @@ export const Dashboard = () => {
 
   const handleAddLink = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsProcessing(true);
     console.log("Link submitted:", newLink);
 
     try {
@@ -167,6 +168,8 @@ export const Dashboard = () => {
       setIsFormOpen(false);
     } catch (err) {
       console.error("Error adding link:", err);
+    }finally{
+      setIsProcessing(false);
     }
   };
 
@@ -230,7 +233,7 @@ export const Dashboard = () => {
 
 
   return (
-    <div className="relative font-thin">
+    <div className={`relative font-thin ${isProcessing ? "blur-sm" : ""}`}>
       <div className="bg-gradient-to-b from-[#1c1c2b] via-[#0d0d1f] to-[#000000] min-h-screen text-white p-5">
         <div className="heading">
           <h1 className="text-sm text-white font-thin text-center mb-3">
@@ -430,6 +433,7 @@ export const Dashboard = () => {
                       className="px-4 py-2 rounded bg-red-500 text-white"
                       onClick={async () => {
                         try {
+                          setIsProcessing(true);
                           await axios.delete(
                             `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/${selectedLink._id}`,
                             { withCredentials: true }
@@ -446,6 +450,7 @@ export const Dashboard = () => {
                         } catch (err) {
                           console.error("Error deleting link:", err);
                         } finally {
+                          setIsProcessing(false);
                           setSelectedLink(null);
                         }
                       }}
