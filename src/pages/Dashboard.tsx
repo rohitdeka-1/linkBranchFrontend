@@ -32,6 +32,7 @@ type User = {
 const randomImage = [
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745083949/ran3_atzbov.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745083944/ran4_vm8qgc.jpg",
+  "https://res.cloudinary.com/doejdsmym/image/upload/v1745208971/jett_bwdfaj.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745086042/astra_tsa2ff.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745086883/neon_a7ok58.gif",
   "https://res.cloudinary.com/doejdsmym/image/upload/v1745085092/1203d8dbd23787123dc714de1c07df09_j9ivav.gif",
