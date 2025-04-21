@@ -370,7 +370,7 @@ export const Dashboard = () => {
                           </div>
                         </div>
                       )}
-                      <h3 className="text-lg text-white text-center font-semibold w-full px-4 py-2">
+                      <h3 className="text-md rounded-md text-white text-center font-thin  w-full px-4 py-2">
                         {link.title.toUpperCase()}
                       </h3>
                     </div>
@@ -410,20 +410,20 @@ export const Dashboard = () => {
                   <label className="block mb-2 text-white">
                     Card Background
                   </label>
-                  <div className="flex gap-2 overflow-x-auto mb-4">
+                    <div className="grid grid-cols-4 grid-rows-3 gap-2 overflow-x-auto mb-4">
                     {randomImage.map((img, i) => (
                       <div
-                        key={i}
-                        className={`w-16 h-16 rounded-lg cursor-pointer bg-cover bg-center border-2 ${
-                          i === bgIndex
-                            ? "border-cyan-400"
-                            : "border-transparent"
-                        }`}
-                        style={{ backgroundImage: `url(${img})` }}
-                        onClick={() => setBgIndex(i)}
+                      key={i}
+                      className={`w-16 h-16 rounded-lg cursor-pointer bg-cover bg-center border-2 ${
+                        i === bgIndex
+                        ? "border-cyan-400"
+                        : "border-transparent"
+                      }`}
+                      style={{ backgroundImage: `url(${img})` }}
+                      onClick={() => setBgIndex(i)}
                       ></div>
                     ))}
-                  </div>
+                    </div>
                   <div className="flex justify-end gap-2">
 
                     <button
