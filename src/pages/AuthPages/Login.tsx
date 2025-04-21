@@ -21,77 +21,72 @@ const Login = () => {
     animation: "animate-slide-in" | "animate-slide-out";
   } | null>(null);
 
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false); 
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setNotification(null); // Clear notification when user starts typing
+    setNotification(null); 
   };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       const res = await axios.post(backendURI, formData, {
-        withCredentials: true, // Send cookies with the request
+        withCredentials: true, 
       });
-
+  
       console.log("Logged in successfully:", res.data);
+  
 
-      // Show success notification
       setNotification({
         message: res.data.message || "Login successful!",
         type: "success",
         animation: "animate-slide-in",
       });
 
-      // Redirect to dashboard after a short delay
       setTimeout(() => {
         setNotification({
           message: res.data.message || "Login successful!",
           type: "success",
           animation: "animate-slide-out",
         });
-        setTimeout(() => navigate ("/dashboard"), 400); // Wait for slide-out animation to finish
-      }, 1500);
+  
+        
+        setTimeout(() => navigate("/dashboard"), 400); 
+      }, 1500); 
     } catch (err: unknown) {
+      e.preventDefault();
       if (isAxiosError(err) && err.response) {
-        if (err.response.status === 401) {
-          setNotification({
-            message: "Invalid credentials. Please try again.",
-            type: "error",
-            animation: "animate-slide-in",
-          });
-        } else if (err.response.status === 500) {
-          setNotification({
-            message: "Internal server error. Please try again later.",
-            type: "error",
-            animation: "animate-slide-in",
-          });
-        } else if (err.response.status === 422) {
-          setNotification({
-            message: "Password should be greater than 3 characters.",
-            type: "error",
-            animation: "animate-slide-in",
-          });
-        } else {
-          setNotification({
-            message: "An error occurred during login. Please try again.",
-            type: "error",
-            animation: "animate-slide-in",
-          });
-        }
+      console.error("Error response:", err.response);
+      const errorMessages: Record<number, string> = {
+        401: "Invalid credentials. Please try again.",
+        500: "Internal server error. Please try again later.",
+        422: "Password should be greater than 3 characters.",
+      };
+
+      setNotification({
+        message: errorMessages[err.response.status] || "An error occurred during login. Please try again.",
+        type: "error",
+        animation: "animate-slide-in",
+      });
       } else {
-        setNotification({
-          message:
-            "Unable to connect to the server. Please check your internet connection.",
-          type: "error",
-          animation: "animate-slide-in",
-        });
+      console.error("Unknown error:", err);
+      setNotification({
+        message: "Unable to connect to the server. Please check your internet connection.",
+        type: "error",
+        animation: "animate-slide-in",
+      });
       }
-      console.error("Error during login:", err);
+
+      setTimeout(() => {
+      setNotification({
+        message: "An error occurred during login. Please try again.",
+        type: "error",
+        animation: "animate-slide-in",
+      });
+      }, 1500);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); 
     }
   };
 

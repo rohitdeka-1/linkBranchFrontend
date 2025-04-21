@@ -13,7 +13,9 @@ axios.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       console.error("Unauthorized access - redirecting to login");
-      window.location.href = "/login"; 
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 1500);
     }
     return Promise.reject(error);
   }

@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import {
   faSquarePlus,
   faRightFromBracket,
-  faBars,
   faLink,
+  faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import SkeletonLoader from "./components/Dashboard/Loader";
@@ -77,7 +77,13 @@ export const Dashboard = () => {
   const [url, setUrl] = useState("");
   const [bgIndex, setBgIndex] = useState(0);
   const [updatingLinkId, setUpdatingLinkId] = useState<string | null>(null);
-  const [isProcessing,setIsProcessing] = useState<Boolean>(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "error" | "success";
+    animation?: string;
+  } | null>(null);
+
   const fetchMe = async () => {
     try {
       const res = await axios.get(
@@ -166,9 +172,20 @@ export const Dashboard = () => {
 
       setNewLink({ title: "", platform: "" });
       setIsFormOpen(false);
-    } catch (err) {
-      console.error("Error adding link:", err);
-    }finally{
+    } catch (err: any) {
+      if (err.response?.status === 400) {
+        setNotification({
+          message: "Maximum 6 links allowed",
+          type: "error",
+          animation: "animate-slide-in ",
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 2000);
+      } else {
+        console.error("Error adding link:", err);
+      }
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -231,9 +248,62 @@ export const Dashboard = () => {
     }
   };
 
+  
+const [isEditNameOpen, setIsEditNameOpen] = useState(false);
+const [newFullName, setNewFullName] = useState(user?.fullname || "");
+
+const handleUpdateFullName = async () => {
+  const prevFullName = user?.fullname;
+  setUser((prev) => ({ ...prev!, fullname: newFullName }));
+
+  try {
+    const res = await axios.put(
+      `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/user-up`,
+      { fullname: newFullName },
+      { withCredentials: true }
+    );
+    setUser((prevUser) => ({
+      ...prevUser!,
+      fullname: res.data.fullname || newFullName,
+    }));
+
+    setNotification({
+      message: "Full name updated successfully!",
+      type: "success",
+      animation: "animate-slide-in",
+    });
+  } catch (err) {
+    console.error("Error updating full name:", err);
+
+  
+    setUser((prevUser) => ({
+      ...prevUser!,
+      fullname: prevFullName!,
+    }));
+
+    setNotification({
+      message: "Failed to update full name. Please try again.",
+      type: "error",
+      animation: "animate-slide-in",
+    });
+  } finally {
+    setTimeout(() => setNotification(null), 2000);
+    setIsEditNameOpen(false); 
+  }
+};
 
   return (
     <div className={`relative font-thin ${isProcessing ? "blur-sm" : ""}`}>
+      {notification && (
+        <div
+          className={`fixed top-4 right-4 px-4 py-2 rounded-md text-white ${
+            notification.type === "error" ? "bg-red-500" : "bg-green-500"
+          } ${notification.animation}`}
+        >
+          {notification.message}
+        </div>
+      )}
+
       <div className="bg-gradient-to-b from-[#1c1c2b] via-[#0d0d1f] to-[#000000] min-h-screen text-white p-5">
         <div className="heading">
           <h1 className="text-sm text-white font-thin text-center mb-3">
@@ -245,7 +315,6 @@ export const Dashboard = () => {
         ) : user ? (
           <div className="space-y-2">
             <div className="bg-black/50 rounded-xl p-4 mb-6">
-            
               <div className="relative flex flex-col items-center justify-center mb-4">
                 <div className="relative w-24 h-24">
                   <button
@@ -291,12 +360,13 @@ export const Dashboard = () => {
                 >
                   <FontAwesomeIcon icon={faLink} />
                 </button>
-      
-              {copySuccess && (
-                <p className="text-green-400 absolute z-10 left-0 right-0 text-sm mt-2">Link copied!</p>
-              )}
+
+                {copySuccess && (
+                  <p className="text-green-400 absolute z-10 left-0 right-0 text-sm mt-2">
+                    Link copied!
+                  </p>
+                )}
               </p>
-              
             </div>
 
             <input
@@ -308,7 +378,6 @@ export const Dashboard = () => {
               onChange={handleFileChange}
               style={{ display: "none" }}
             />
-
 
             <div className="relative mt-6">
               <div className="grid grid-cols-2 mt-5 sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
@@ -379,6 +448,14 @@ export const Dashboard = () => {
                     </div>
                   </motion.div>
                 ))}
+                {user?.links.length < 6 && (
+                  <div
+                    className="p-4 border-2 border-dashed border-gray-500 rounded-lg flex items-center justify-center cursor-pointer"
+                    onClick={() => setIsFormOpen(true)}
+                  >
+                    <span className="text-gray-500 text-2xl">+</span>
+                  </div>
+                )}
               </div>
             </div>
             {selectedLink && (
@@ -413,29 +490,30 @@ export const Dashboard = () => {
                   <label className="block mb-2 text-white">
                     Card Background
                   </label>
-                    <div className="grid grid-cols-4 grid-rows-3 gap-2 overflow-x-hidden mb-4">
+                  <div className="grid grid-cols-4 grid-rows-3 gap-2 overflow-x-hidden mb-4">
                     {randomImage.map((img, i) => (
                       <div
-                      key={i}
-                      className={`w-16 h-16 rounded-lg cursor-pointer bg-cover bg-center border-2 ${
-                        i === bgIndex
-                        ? "border-cyan-400"
-                        : "border-transparent"
-                      }`}
-                      style={{ backgroundImage: `url(${img})` }}
-                      onClick={() => setBgIndex(i)}
+                        key={i}
+                        className={`w-16 h-16 rounded-lg cursor-pointer bg-cover bg-center border-2 ${
+                          i === bgIndex
+                            ? "border-cyan-400"
+                            : "border-transparent"
+                        }`}
+                        style={{ backgroundImage: `url(${img})` }}
+                        onClick={() => setBgIndex(i)}
                       ></div>
                     ))}
-                    </div>
+                  </div>
                   <div className="flex justify-end gap-2">
-
                     <button
                       className="px-4 py-2 rounded bg-red-500 text-white"
                       onClick={async () => {
                         try {
                           setIsProcessing(true);
                           await axios.delete(
-                            `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/${selectedLink._id}`,
+                            `${import.meta.env.VITE_BACKEND_URI}/api/v1/user/${
+                              selectedLink._id
+                            }`,
                             { withCredentials: true }
                           );
                           setUser((prevUser) => {
@@ -481,9 +559,11 @@ export const Dashboard = () => {
 
       <div className="font-bold text-md flex items-center justify-center fixed w-full bottom-0 left-0 right-0 py-1 border-cyan-400">
         <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border w-3/4 py-2 rounded-3xl">
-          <button>
+          <button
+          onClick={() => setIsEditNameOpen(true)}
+          >
             <span className="text-2xl w-full">
-              <FontAwesomeIcon icon={faBars} style={{ color: "#ffffff" }} />
+              <FontAwesomeIcon icon={faPencil} style={{ color: "#ffffff" }} />
             </span>
           </button>
 
@@ -506,6 +586,34 @@ export const Dashboard = () => {
           </button>
         </span>
       </div>
+      {isEditNameOpen && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div className="bg-[#1f1f1f] rounded-lg p-6 w-[90%] max-w-md">
+      <h2 className="text-xl font-bold text-white mb-4">Update Full Name</h2>
+      <input
+        type="text"
+        value={newFullName}
+        onChange={(e) => setNewFullName(e.target.value)}
+        className="w-full px-4 py-2 rounded bg-gray-800 border border-gray-600 text-white mb-4"
+        placeholder="Enter new full name"
+      />
+      <div className="flex justify-end gap-2">
+        <button
+          onClick={() => setIsEditNameOpen(false)}
+          className="px-4 py-2 rounded bg-red-500 text-white"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={handleUpdateFullName}
+          className="px-4 py-2 rounded bg-cyan-500 text-white"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       <AnimatePresence>
         {isFormOpen && (
@@ -542,7 +650,7 @@ export const Dashboard = () => {
                   placeholder="Enter Title (e.g., Instagram)"
                   required
                 />
-              </div>
+              </div>  
 
               <div>
                 <label htmlFor="platform" className="block mb-1">
