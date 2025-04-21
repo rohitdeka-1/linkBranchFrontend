@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Login from './pages/AuthPages/Login';
 import Register from './pages/AuthPages/Register';
 import Dashboard from './pages/Dashboard';
+import Public from './pages/Public';
 
 function App() {
 
@@ -13,6 +14,7 @@ function App() {
         <Route path='/register' element={<Register/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/dashboard' element={<Dashboard/>} />
+        <Route path='/:username' element={<Public/>} />
       </Routes>
     </Router>
   )
