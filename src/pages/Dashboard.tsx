@@ -316,7 +316,7 @@ export const Dashboard = () => {
           <p className="text-red-400 slide-in">{error}</p>
         ) : user ? (
           <div className="space-y-2">
-            <div className="bg-black/50 rounded-xl p-4 mb-6">
+            <div className="bg-black/50 rounded-xl p-4 max-w-2xl mx-auto mb-6">
               <div className="relative flex flex-col items-center justify-center mb-1">
                 <div className="relative w-24 h-24">
                   <button
@@ -385,7 +385,7 @@ export const Dashboard = () => {
             />
 
             <div className="relative mt-6">
-              <div className="grid grid-cols-2 mt-5 sm:grid-cols-2 lg:grid-cols-2 gap-3 auto-rows-fr">
+              <div className="grid grid-cols-2 mt-5 sm:grid-cols-2 lg:grid-cols-2 gap-3 max-w-xl mx-auto auto-rows-fr">
                 {user.links.slice(0, 6).map((link, index) => (
                   <motion.div
                     key={link._id}
@@ -563,7 +563,7 @@ export const Dashboard = () => {
       </div>
 
       <div className="font-bold text-md flex items-center justify-center fixed w-full bottom-0 left-0 right-0 py-1 border-cyan-400">
-        <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border w-3/4 py-1 backdrop-blur-3xl shadow-2xl rounded-3xl">
+        <span className="flex flex-row space-x-5 items-center justify-evenly mb-4 border sm:w-3/4 py-1 backdrop-blur-3xl shadow-2xl lg:w-3/12 rounded-3xl w-2/3">
           <button onClick={() => setIsEditNameOpen(true)}>
             <span className="text-2xl w-full">
               <FontAwesomeIcon icon={faPencil} style={{ color: "#ffffff" }} />

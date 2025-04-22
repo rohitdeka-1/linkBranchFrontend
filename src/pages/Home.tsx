@@ -20,7 +20,7 @@ const Home = () => {
       }}
     >
       <Logo />
-      <div className="min-h-screen flex flex-col justify-start items-start relative  text-white p-4 lg:hidden lg:px-36 space-y-8 ">
+      <div className="min-h-screen flex flex-col justify-start items-start relative  text-white p-4 lg:px-36 space-y-8 ">
         {/* Top Text Section */}
         <div className="flex flex-col space-y-4 mt-20 w-full px-4 space lg:px-0">
           <h2 className="font-extralight text-3xl leading-relaxed w-full lg:w-3/5">

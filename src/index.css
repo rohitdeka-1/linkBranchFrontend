@@ -70,3 +70,13 @@
   -webkit-transition: 100ms;
   transition: 100ms;
 }
+
+/* Hide scrollbar for all elements */
+::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Edge */
+}
+
+html {
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none; /* For Firefox */
+}
