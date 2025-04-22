@@ -18,6 +18,7 @@ const Home = () => {
         ease: "easeInOut",
         repeat: Infinity,
       }}
+      className="w-screen min-h-screen overflow-hidden"
     >
       <Logo />
       <div className="min-h-screen flex flex-col justify-start items-start relative  text-white p-4 lg:px-36 space-y-8 ">
@@ -31,38 +32,36 @@ const Home = () => {
           </p>
         </div>
 
- 
-        <div className="flex flex-col md:flex-row px-4 mt-10 w-full space-y-6 md:space-y-0 md:space-x-6 lg:justify-center lg:w-[60rem] lg:items-center">
-          {/* Left - Buttons */}
-          <div className="flex flex-col w-full md:w-1/2 space-y-4">
-            <Link
-              to="/login"
-              className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold"
-            >
-              Register
-            </Link>
-          </div>
+        <div className="flex flex-col md:flex-row px-4 mt-10 mx-auto w-full space-y-6 md:space-y-0 md:space-x-6 lg:justify-center lg:w-[60rem] lg:items-center">
+  {/* Left - Buttons */}
+  <div className="flex flex-col w-full md:w-1/2 space-y-4 justify-center items-center md:items-start">
+    <Link
+      to="/login"
+      className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold w-3/4 md:w-full"
+    >
+      Login
+    </Link>
+    <Link
+      to="/register"
+      className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold w-3/4 md:w-full"
+    >
+      Register
+    </Link>
+  </div>
 
- 
-          <div className="w-full md:w-1/2 flex justify-center items-center">
-            <img
-              src="./coverPhoto.png"
-              className="w-full object-contain rounded-2xl"
-              alt="cover"
-            />
-          </div>
-        </div>
-
+  {/* Right - Image */}
+  <div className="w-full md:w-1/2 flex justify-center items-center px-4 lg:px-8">
+    <img
+      src="./coverPhoto.png"
+      className="w-full object-contain rounded-2xl"
+      alt="cover"
+    />
+  </div>
+</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 w-full">
-          <div className="flex flex-col justify-center items-start">
+          <div className="flex flex-col justify-center items-start ">
             <h1 className="text-3xl font-bold w-full text-center">Features</h1>
-            <p className="text-slate-300 py-6 text-justify">
+            <p className="text-slate-300 py-6 text-justify ">
               LinkBranch is a powerful tool that allows you to create a
               personalized and customizable page that houses all your important
               links. Whether you're a content creator, business owner, or just
@@ -81,9 +80,12 @@ const Home = () => {
             </p>
           </div>
         </div>
-        <div className="flex flex-row px-4 w-full ">
-          <img src="./cover2.png"></img>
+        <div className="flex items-center mx-auto flex-row px-4 w-full">
+          <div className=" mx-auto ">
+            <img src="./cover2.png"></img>
+          </div>
         </div>
+
         <div className="w-full">
           <Footer />
         </div>
