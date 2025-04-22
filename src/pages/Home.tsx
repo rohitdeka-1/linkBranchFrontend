@@ -33,34 +33,34 @@ const Home = () => {
         </div>
 
         <div className="flex flex-col md:flex-row px-4 mt-10 mx-auto w-full space-y-6 md:space-y-0 md:space-x-6 lg:justify-center lg:w-[60rem] lg:items-center">
-  {/* Left - Buttons */}
-  <div className="flex flex-col w-full md:w-1/2 space-y-4 justify-center items-center md:items-start">
-    <Link
-      to="/login"
-      className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold w-3/4 md:w-full"
-    >
-      Login
-    </Link>
-    <Link
-      to="/register"
-      className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold w-3/4 md:w-full"
-    >
-      Register
-    </Link>
-  </div>
+          {/* Left - Buttons */}
+          <div className="flex flex-col w-full md:w-1/2 space-y-4 justify-center items-center md:items-start">
+            <Link
+              to="/login"
+              className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold w-3/4 md:w-full"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="bg-slate-200 hover:bg-slate-400 h-14 text-black text-center flex justify-center items-center px-4 py-2 rounded-2xl font-bold w-3/4 md:w-full"
+            >
+              Register
+            </Link>
+          </div>
 
-  {/* Right - Image */}
-  <div className="w-full md:w-1/2 flex justify-center items-center px-4 lg:px-8">
-    <img
-      src="./coverPhoto.png"
-      className="w-full object-contain rounded-2xl"
-      alt="cover"
-    />
-  </div>
-</div>
+          {/* Right - Image */}
+          <div className="w-full md:w-1/2 flex justify-center items-center px-4 lg:px-8">
+            <img
+              src="./coverPhoto.png"
+              className="w-full object-contain rounded-2xl"
+              alt="cover"
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4 w-full">
-          <div className="flex flex-col justify-center items-start ">
-            <h1 className="text-3xl font-bold w-full text-center">Features</h1>
+          <div className="flex flex-col justify-center items-start max-w-sm ">
+            <h1 className="text-3xl font-bold w-full text-center ">Features</h1>
             <p className="text-slate-300 py-6 text-justify ">
               LinkBranch is a powerful tool that allows you to create a
               personalized and customizable page that houses all your important
@@ -70,13 +70,13 @@ const Home = () => {
             </p>
           </div>
 
-          <div className="flex flex-col justify-center items-start">
+          <div className="flex flex-col justify-center items-start max-w-sm">
             <h1 className="text-3xl font-bold  w-full text-center">Pricing</h1>
-            <p className="text-slate-300 py-6 text-justify">
-              LinkBranch offers flexible pricing plans to suit your needs. From
-              a free plan with basic features to premium plans with advanced
-              analytics and customization options, there's something for
-              everyone.
+            <p className="text-slate-300 py-6 text-justify ">
+              LinkBranch offers flexible pricing plans to suit your needs. You
+              can start with our free plan, which includes basic features and
+              design, or upgrade to premium plans for advanced analytics and
+              enhanced customization options. Choose the plan that fits you best.
             </p>
           </div>
         </div>
